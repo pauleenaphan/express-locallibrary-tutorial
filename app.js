@@ -62,15 +62,16 @@ app.use(limiter);
 
 module.exports = app;
 
-
 // Set up mongoose connection
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
-const dev_db_url = "mongodb+srv://pauleena:puppy890@cluster0.wgrrza0.mongodb.net/local_library?retryWrites=true&w=majority&appName=Cluster0";
+
+// Load environment variables from .env file
+require('dotenv').config();
+
+const dev_db_url = process.env.DEV_DB_URL;
 const mongoDB = process.env.MONGODB_URI || dev_db_url;
 
-
-main().catch((err) => console.log(err));
-async function main() {
-  await mongoose.connect(mongoDB);
-}
+mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.error('MongoDB connection error:', err));
